@@ -39,19 +39,64 @@ const tokens = {
     }
 }
 
+const checkVasya = 5000;
+const skew=0.5
+
+function randomBM(min, max, skew=0.5) {
+    let u1 = 0, u2 = 0;
+    while (u1 === 0){
+        u1 = Math.random();
+    }
+    while (u2 === 0){
+        u2 = Math.random();
+    } 
+    const R = Math.sqrt(-2.0 * Math.log(u1));
+    const Theta = 2.0 * Math.PI * u2;
+   
+    const result = (min*(1-rand)+max*rand);
+
+    return result;
+    
+}
 
 /**
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin(token) {
+    this.price = Number.parseFloat(token.price);
+    this.priceChange24h = Number.parseFloat(token.priceChange24h)/100;
+    this.amount = Math.floor(checkVasya / this.price);
+}
+
+Coin.prototype.updatePrice = function(){
+    const procent = randomBM(1-this.priceChange24h, 1 + this.priceChange24h, skew);
+    //console.log(procent, 1-this.priceChange24h,1+ this.priceChange24h);
+    this.price = this.price * procent;
+}
+
+Coin.prototype.getProfit = function(){
+    return this.amount * this.price;
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice(months) {
+    const totalDays = months.reduce((days, obj)=> days + new Date(obj.year, obj.month,0).getDate(), 0);
+    const eth = new Coin(tokens.ETH);
+    const doge = new Coin(tokens.DOGE);
+    for(let i = 0; i < totalDays; i++){
+        eth.updatePrice();
+        doge.updatePrice();
+    }
+    console.log(eth.getProfit());
+    console.log(doge.getProfit());
+}
+
+tokenChoice([{ month: 10, year: 2022 },{ month: 11, year: 2022 },{ month: 9, year: 2022 }]);
 
 
-module.exports.tokenChoice = tokenChoice;
+//module.exports.tokenChoice = tokenChoice;
