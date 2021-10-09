@@ -19,7 +19,7 @@
  * В итоге по предоставленным данным вы должны выбрать один токен, который принесет максимальную прибыль
  */
 
-const tokens = {
+ const tokens = {
     ETH: {
         price: "3400.92$",
         priceChange24h: "4.18%",
@@ -48,13 +48,13 @@ function Coin(token) {
 }
 
 Coin.prototype.format = function (data) {
-    return parseInt(data.slice(0, -1));
+    return parseFloat(data.slice(0, -1));
 };
 
-Coin.prototype.calculatePrice = function (date) {
-    const days = Math.round((new Date() - date) / 86400000);
+Coin.prototype.calculatePrice = function (start, end) {
+    const days = Math.round((end - start) / 86400000);
     for (let i = 0; i < days; i++) {
-        this.price += (this.price * this.priceChange24h) / 100;
+        this.price += this.price * this.priceChange24h / 100;
     }
 
     return this.price;
@@ -68,9 +68,15 @@ function tokenChoice(months) {
     let maxPrice = 0;
     let key;
     for (const token in tokens) {
-        const price = new Coin(token).calculatePrice(
-            new Date(months.year, months.month - 1)
-        );
+        const start = new Date(months[0].year, months[0].month - 1);
+        const end =
+            months.length > 1
+                ? new Date(
+                    months[months.length - 1].year,
+                    months[months.length - 1].month
+                )
+                : new Date(months[0].year, months[0].month);
+        const price = new Coin(token).calculatePrice(start, end);
         if (price > maxPrice) {
             maxPrice = price;
             key = token;
