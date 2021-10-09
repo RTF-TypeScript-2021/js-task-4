@@ -32,8 +32,50 @@ Hamburger.STUFFING_POTATO = 'STUFFING_POTATO' //price 15 kal 10
 Hamburger.TOPPING_MAYO = 'TOPPING_MAYO'; //price 20 kal 5
 Hamburger.TOPPING_SPICE = 'TOPPING_SPICE'; //price 15
 
+const sizes = {
+    "SIZE_SMALL": {
+        price: 50,
+        kal: 20
+    },
+    "SIZE_LARGE": {
+        price: 100,
+        kal: 40
+    }
+}
+const stuffings = {
+    "STUFFING_CHEESE": {
+        price: 10,
+        kal: 20
+    },
+    "STUFFING_SALAD": {
+        price: 20,
+        kal: 5
+    },
+    "STUFFING_POTATO": {
+        price: 15,
+        kal: 10
+    }
+}
+const toppings = {
+    "TOPPING_MAYO": {
+        price: 20,
+        kal: 5
+    },
+    "TOPPING_SPICE": {
+        price: 15,
+        kal: 0
+    }
+}
+
 function Hamburger(size, stuffing) {
- 
+    if (!(size in sizes) || !(stuffing in stuffings)) {
+        throw new Error("Wrong args");
+    }
+    this.size = size;
+    this.stuffing = stuffing;
+    this.currToppings = [];
+    this.price = sizes[size].price + stuffings[stuffing].price;
+    this.kal = sizes[size].kal + stuffings[stuffing].kal;
 }
  
 /*Добавить добавку к гамбургеру. Можно добавить несколько
@@ -41,37 +83,55 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
+    if (!(topping in toppings) || this.currToppings.includes(topping)) {
+        throw new Error();
+    }
+    this.currToppings.push(topping);
+    this.price += toppings[topping].price;
+    this.kal += toppings[topping].kal;
 }
  
 /* Убрать добавку, при условии, что она ранее была
  * добавлена.
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
- Hamburger.prototype.removeTopping = function (topping) {
- }
+Hamburger.prototype.removeTopping = function (topping) {
+    if (!(topping in toppings) || !this.currToppings.includes(topping)) {
+        throw new Error("T_T");
+    }
+    this.currToppings = this.currToppings.filter(x => x !== topping);
+    this.price -= toppings[topping].price;
+    this.kal -= toppings[topping].kal;
+}
  
 /* Получить список добавок.
  * @return {Array} Массив добавленных добавок, содержит константы
  *                 Hamburger.TOPPING_**/
- Hamburger.prototype.getToppings = function () {
- }
+Hamburger.prototype.getToppings = function () {
+    return this.currToppings;
+}
  
 /* Узнать размер гамбургера */
-Hamburger.prototype.getSize = function (size) {  }
+Hamburger.prototype.getSize = function (size) {
+    return this.size;
+}
  
 /* Узнать начинку гамбургера */
 Hamburger.prototype.getStuffing = function () {
+    return this.stuffing;
 }
  
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
+    return this.price;
 }
  
  
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
+    return this.kal;
 }
 
 module.exports.Hamburger = Hamburger;
