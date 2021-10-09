@@ -54,7 +54,7 @@ Coin.prototype.format = function (data) {
 Coin.prototype.calculatePrice = function (date) {
     const days = Math.round((new Date() - date) / 86400000);
     for (let i = 0; i < days; i++) {
-        this.price = this.price + (this.price * this.priceChange24h) / 100;
+        this.price += (this.price * this.priceChange24h) / 100;
     }
 
     return this.price;
@@ -65,15 +65,15 @@ Coin.prototype.calculatePrice = function (date) {
  * @return название токена
  */
 function tokenChoice(months) {
-    let max = 0;
+    let maxPrice = 0;
     let key;
-    for (const tokensKey in tokens) {
-        const coin = new Coin(tokensKey).calculatePrice(
+    for (const token in tokens) {
+        const price = new Coin(token).calculatePrice(
             new Date(months.year, months.month - 1)
         );
-        if (coin > max) {
-            max = coin;
-            key = tokensKey;
+        if (price > maxPrice) {
+            maxPrice = price;
+            key = token;
         }
     }
 
