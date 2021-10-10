@@ -1,27 +1,28 @@
 /**
-* Некая сеть фастфудов предлагает несколько видов гамбургеров:
-* маленький (50 тугриков, 20 калорий)
-* большой (100 тугриков, 40 калорий)
-* Гамбургер может быть с одним из нескольких видов начинок (обязательно):
-* сыром (+ 10 тугриков, + 20 калорий)
-* салатом (+ 20 тугриков, + 5 калорий)
-* картофелем (+ 15 тугриков, + 10 калорий)
-* Дополнительно, гамбургер можно посыпать приправой (+ 15 тугриков, 0 калорий) и полить майонезом (+ 20 тугриков, + 5 калорий).
-* Напиши программу, расчиытвающую стоимость и калорийность гамбургера. Используй ООП подход (подсказка: нужен класс Гамбургер, 
-* константы, методы для выбора опций и рассчета нужных величин).
-* Код должен быть защищен от ошибок. Представь, что твоим классом будет пользоваться другой программист. 
-* Если он передает неправильный тип гамбургера, например, или неправильный вид добавки, должно выбрасываться исключение 
-* (ошибка не должна молча игнорироваться).
-*/
+ * Некая сеть фастфудов предлагает несколько видов гамбургеров:
+ * маленький (50 тугриков, 20 калорий)
+ * большой (100 тугриков, 40 калорий)
+ * Гамбургер может быть с одним из нескольких видов начинок (обязательно):
+ * сыром (+ 10 тугриков, + 20 калорий)
+ * салатом (+ 20 тугриков, + 5 калорий)
+ * картофелем (+ 15 тугриков, + 10 калорий)
+ * Дополнительно, гамбургер можно посыпать приправой (+ 15 тугриков, 0 калорий) и полить майонезом (+ 20 тугриков, + 5 калорий).
+ * Напиши программу, расчиытвающую стоимость и калорийность гамбургера. Используй ООП подход (подсказка: нужен класс Гамбургер,
+ * константы, методы для выбора опций и рассчета нужных величин).
+ * Код должен быть защищен от ошибок. Представь, что твоим классом будет пользоваться другой программист.
+ * Если он передает неправильный тип гамбургера, например, или неправильный вид добавки, должно выбрасываться исключение
+ * (ошибка не должна молча игнорироваться).
+ */
 
 
 /**
-* Класс, объекты которого описывают параметры гамбургера. 
-* 
-* @constructor
-* @param size        Размер
-* @param stuffing    Начинка
-*/
+ * Класс, объекты которого описывают параметры гамбургера.
+ *
+ * @constructor
+ * @param size        Размер
+ * @param stuffing    Начинка
+ */
+
 
 /* Размеры, виды начинок и добавок */
 Hamburger.SIZE_SMALL = 'SIZE_SMALL'; //kal 20 price 50
@@ -33,45 +34,107 @@ Hamburger.TOPPING_MAYO = 'TOPPING_MAYO'; //price 20 kal 5
 Hamburger.TOPPING_SPICE = 'TOPPING_SPICE'; //price 15
 
 function Hamburger(size, stuffing) {
- 
+    if (size !== Hamburger.SIZE_LARGE && size !== Hamburger.SIZE_SMALL ||
+        stuffing !== Hamburger.STUFFING_SALAD && stuffing !== Hamburger.STUFFING_POTATO && stuffing !== Hamburger.STUFFING_CHEESE) {
+        throw new Error();
+    }
+
+    this.size = size;
+    this.stuffing = stuffing;
+    this.toppings = new Set();
 }
- 
+
+Hamburger.prototype.dictionary = {
+    SIZE_SMALL: {
+        price: 50,
+        kal: 20
+    },
+    SIZE_LARGE: {
+        price: 100,
+        kal: 40
+    },
+    STUFFING_CHEESE: {
+        price: 10,
+        kal: 20
+    },
+    STUFFING_SALAD: {
+        price: 20,
+        kal: 5
+    },
+    STUFFING_POTATO: {
+        price: 15,
+        kal: 10
+    },
+    TOPPING_MAYO: {
+        price: 20,
+        kal: 5
+    },
+    TOPPING_SPICE: {
+        price: 15,
+        kal: 0
+    }
+}
+
 /*Добавить добавку к гамбургеру. Можно добавить несколько
 * добавок, при условии, что они разные.
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
+    if (topping !== Hamburger.TOPPING_SPICE && topping !== Hamburger.TOPPING_MAYO ||
+        this.toppings.has(topping)) {
+        throw new Error("HamburgerException");
+    }
+
+    this.toppings.add(topping);
 }
- 
+
 /* Убрать добавку, при условии, что она ранее была
  * добавлена.
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
- Hamburger.prototype.removeTopping = function (topping) {
- }
- 
+Hamburger.prototype.removeTopping = function (topping) {
+    if (topping !== Hamburger.TOPPING_SPICE && topping !== Hamburger.TOPPING_MAYO ||
+        !this.toppings.has(topping)) {
+        throw new Error("HamburgerException");
+    }
+
+    this.toppings.delete(topping);
+}
+
 /* Получить список добавок.
  * @return {Array} Массив добавленных добавок, содержит константы
  *                 Hamburger.TOPPING_**/
- Hamburger.prototype.getToppings = function () {
- }
- 
+Hamburger.prototype.getToppings = function () {
+    return Array.from(this.toppings.keys());
+}
+
 /* Узнать размер гамбургера */
-Hamburger.prototype.getSize = function (size) {  }
- 
+Hamburger.prototype.getSize = function () {
+    return this.size;
+}
+
 /* Узнать начинку гамбургера */
 Hamburger.prototype.getStuffing = function () {
+    return this.stuffing;
 }
- 
+
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
+    return this
+        .getToppings()
+        .reduce((sum, topping) => sum + this.dictionary[topping].price,
+            this.dictionary[this.size].price + this.dictionary[this.stuffing].price)
 }
- 
- 
+
+
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
+    return this
+        .getToppings()
+        .reduce((sum, topping) => sum + this.dictionary[topping].kal,
+            this.dictionary[this.size].kal + this.dictionary[this.stuffing].kal)
 }
 
 module.exports.Hamburger = Hamburger;
