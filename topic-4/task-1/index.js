@@ -62,7 +62,7 @@ function tokenChoice(months) {
     let maxPrice = ['', 0]
 
     for (const name in tokens){
-        const price = [name, Number(tokens[name].price.slice(0, -1)) * Number(1 + tokens[name].priceChange24h.slice(0, -1)) ** daysCount]
+        const price = [name, 5000 * Number(1 + tokens[name].priceChange24h.slice(0, -1)) ** daysCount]
         if (price[1] > maxPrice[1]){
             maxPrice = price;
         }
