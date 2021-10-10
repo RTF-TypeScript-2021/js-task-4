@@ -90,6 +90,12 @@ Coin.prototype.averageProfit = function (countDays){
  * @return название токена
  */
 function tokenChoice(months){
+    for(let month of months){
+        let chekDate = new Date(month.year, month.month)
+        if(chekDate == 'Invalid Date'){ //вебшторм светит нестрогое сравнение, строгое не работает, это можно пофиксить или так нормально?
+            throw new Error('Ошибка в массиве месяцев')
+        }
+    }
     const startDate = new Date(months[0].year, months[0].month, 1)
     const finishDate = new Date(months[months.length-1].year, months[months.length-1].month+1, 0)
     let daysCount = 1+ (finishDate - startDate)/86400000
