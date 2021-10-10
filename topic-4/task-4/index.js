@@ -5,38 +5,41 @@
  */
 
 function getHead() {
-    let head = {
+    this.head = {
         glasses: 1
     };
 
-    return head;
+    return this.head;
 }
 
 function getTable() {
-    let table = {
+    this.table = {
         pen: 3,
+        __proto__: getHead()
     };
-    
-    return table;
+
+    return this.table;
 }
 
 function getBed() {
-    let bed = {
+    this.bed = {
         sheet: 1,
         pillow: 2,
+        __proto__: getTable()
     };
 
-    return bed;
+    return this.bed;
 }
 
 function getPockets() {
-    let pockets = {
+    this.pockets = {
         money: 2000,
+        __proto__: getBed()
     };
-    
 
-    return pockets;
+    return this.pockets;
 }
+
 
 module.exports.getHead = getHead;
 module.exports.getTable = getTable;
