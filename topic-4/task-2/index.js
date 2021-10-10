@@ -63,10 +63,10 @@ Hamburger.TOPPING_SPICE = {
 
 function Hamburger(size, stuffing) {
     if(Hamburger[size.type] === undefined){
-        throw Error();
+        throw Error("size is not property of Hamburger, must be like Hamburger.SIZE_LARGE ...");
     }
     if(Hamburger[stuffing.type] === undefined){
-        throw Error();
+        throw Error("stuffing is not property of Hamburger, must be like Hamburger.STUFFING_POTATO ...");
     }
     this.size = size;
     this.stuffing = stuffing; //TODO: одна начинка должна быть обязательно
@@ -78,10 +78,10 @@ function Hamburger(size, stuffing) {
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
     if(Hamburger[topping.type] === undefined){
-        throw Error();
+        throw Error("topping is not property of Hamburger, must be like Hamburger.TOPPING_SPICE");
     }
     if(this.toppings.includes(topping)){
-        throw Error();
+        throw Error(`topping ${topping.type} has already been added`);
     }
     this.toppings.push(topping);
 }
@@ -93,7 +93,7 @@ Hamburger.prototype.addTopping = function (topping) {
 Hamburger.prototype.removeTopping = function (topping) {
     const toppingIdx = this.toppings.indexOf(topping);
     if (topping === -1){
-        throw new Error();
+        throw new Error("can't remove, topping is empty");
     }else {
         this.toppings.splice(toppingIdx,1);
     }

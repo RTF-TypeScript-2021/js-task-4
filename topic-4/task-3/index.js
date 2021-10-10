@@ -3,35 +3,50 @@
     Когда мы кормим одного хомяка, второй тоже наедается. Почему? Как это исправить?
  */
 
-let hamster = {
-    stomach: [],
-
-    eat(food) {
-        this.stomach.push(food);
-    }
-};
+function hamster() {
+    this.stomach = [];
+}
+    
+hamster.prototype.eat = function(food){
+    this.stomach.push(food);
+}
 
 function getSpeedy() {
-    let speedy = {
-        __proto__: hamster
+    const speedy = {
+        __proto__ : hamster.prototype,
     };
 
-    return speedy;
+    return hamster.apply(speedy) || speedy;
 }
 
 function getLazy() {
-    let lazy = {
-        __proto__: hamster
+    const lazy = {
+        __proto__ : hamster.prototype,
     };
 
-    return lazy;
+    return hamster.apply(lazy) || lazy;
 }
 
 // Этот хомяк нашёл еду
-getSpeedy().eat("apple");
-console.log(getSpeedy().stomach); // apple
+const speedy = getSpeedy();
+speedy.eat("apple");
+console.log(speedy.stomach); // apple
 
 // У этого хомяка тоже есть еда. Почему? Исправьте
+/*
+    Объекты lazy и speedy не содержат поля speedy поэтому при вызове метода
+    eat stomatch будет искаться в прототипе если в прототипе его не окажется, 
+    то поиск будет продолжаться по цепочке прототипов.
+    Так как в нашем случае  __proto__ содержит массив stomach, то он будет изменен. 
+    На hamster ссылаются два объекта, поэтому при вызове getLazy().stomach
+    мы получим  __proto__.stomach, который уже содержит "apple"
+
+    Сделал из объекта hamster функцию конструктор, который вызывается с привязкой
+    к новому созданному объекту. Теперь массив stomach у каждого объекта свой и
+    не изменяется при вызове метода eat у другого объекта.
+    
+    В __proto__ положил hamster.prototype для доступа к методу eat из наследников
+*/
 console.log(getLazy().stomach); // apple
 
 
