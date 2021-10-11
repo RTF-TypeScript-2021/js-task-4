@@ -13,17 +13,17 @@ let hamster = {
 
 function getSpeedy() {
     let speedy = {
+        stomach: [],
         __proto__: hamster
     };
-
     return speedy;
 }
 
 function getLazy() {
     let lazy = {
+        stomach: [],
         __proto__: hamster
     };
-
     return lazy;
 }
 

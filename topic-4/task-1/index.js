@@ -6,7 +6,7 @@
  * 
  * На практике, чтобы определить, куда инвестировать, нужно учитывать большое количество параметров,
  * но Вася не инвестор, поэтому во всей этой тенденции ему важны три параметра:
- * 	- изменение цены за 24 часа
+ *     - изменение цены за 24 часа
  *  - цена
  * 
  * Бюджет Васи = 5.000$ и он хочет держать на них токены, а потом продать.
@@ -44,14 +44,32 @@ const tokens = {
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin(token) {
+    this.price = tokens[token].price.slice(0, -1);
+    this.priceChange24h = tokens[token].priceChange24h.slice(0, -1);
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice(months) { 
+    let currentDate = new Date();
+    let nextDate = new Date(months[0]["year"], months[0]["month"]);
+    let daysCount = (nextDate.getTime() - currentDate.getTime()) / 64800000;
+    let bestCost = 0;
+    let profitableToken;
+    for (const token in tokens) {
+        let coin = new Coin(token);
+        let currentCost = coin.price * (1 + coin.priceChange24h / 100) ** daysCount;
+        if (currentCost > bestCost) {
+            bestCost = currentCost;
+            profitableToken = token;
+        }
+    }
+    return profitableToken;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
