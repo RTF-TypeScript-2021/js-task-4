@@ -3,21 +3,21 @@
  * с надеждой вложить свои деньги в другие токены чтобы отбить потери.
  * По тактике Васи, вкладывать стоит только в токены, которые еще не показали свой максимум
  * Поэтому он выписал себе несколько перспективных, осталось только понять, куда вложиться
- * 
+ *
  * На практике, чтобы определить, куда инвестировать, нужно учитывать большое количество параметров,
  * но Вася не инвестор, поэтому во всей этой тенденции ему важны три параметра:
- * 	- изменение цены за 24 часа
+ *    - изменение цены за 24 часа
  *  - цена
- * 
+ *
  * Бюджет Васи = 5.000$ и он хочет держать на них токены, а потом продать.
- * 
+ *
  * Вася выяснил, на сколько приблизительно меняется цена у каждого токена и записал это в поле priceChange24h
  * Может как уменьшиться, так и увеличиться.
- * 
+ *
  * У вас уже создан базовый класс Coin, вам необходимо создать от него остальные токены
- * 
+ *
  * В итоге по предоставленным данным вы должны выбрать один токен, который принесет максимальную прибыль
-*/
+ */
 
 
 const tokens = {
@@ -41,17 +41,43 @@ const tokens = {
 
 
 /**
- * 
+ *
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin (token) {
+    this.priceChange24h = parseFloat(tokens[token].priceChange24h);
+    this.price = parseFloat(tokens[token].price);
+}
+
+Coin.prototype.getFutureCost = function (months) {
+    const days = Math.floor((new Date(months[0]["year"], months[0]["month"]) - new Date()) / (1000 * 60 * 60 * 24));
+    
+    return this.price * (this.priceChange24h / 100) ** days;
+}
 
 /**
- * 
+ *
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice (months) {
+    let result;
+    let maxFutureCost = -1;
+    
+    for (const i in tokens) {
+        const currentCoin = new Coin(i);
+        if (currentCoin.price <= 5000) {
+            const futureCost = currentCoin.getFutureCost(months);
+            
+            if (futureCost > maxFutureCost) {
+                result = i;
+                maxFutureCost = futureCost;
+            }
+        }
+    }
+    
+    return result;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
