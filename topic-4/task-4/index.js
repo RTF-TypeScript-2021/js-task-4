@@ -1,11 +1,7 @@
-/**
- * С помощью свойства __proto__ задайте прототипы так,
- *  чтобы поиск любого свойства выполнялся по следующему пути: pockets → bed → table → head. 
- * Например, pockets.pen должно возвращать значение 3 (найденное в table), а bed.glasses – значение 1 (найденное в head).
- */
+"use strict"
 
 function getHead() {
-    let head = {
+    const head = {
         glasses: 1
     };
 
@@ -13,28 +9,30 @@ function getHead() {
 }
 
 function getTable() {
-    let table = {
+    const table = {
         pen: 3,
+        __proto__: getHead()
     };
     
     return table;
 }
 
 function getBed() {
-    let bed = {
+    const bed = {
         sheet: 1,
         pillow: 2,
+        __proto__: getTable()
     };
 
     return bed;
 }
 
 function getPockets() {
-    let pockets = {
+    const pockets = {
         money: 2000,
+        __proto__: getBed()
     };
     
-
     return pockets;
 }
 
