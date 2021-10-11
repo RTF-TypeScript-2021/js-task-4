@@ -56,7 +56,7 @@ Coin.prototype.getMinPrice = function (days) {
 }
 
 Coin.prototype.getAveragePrice = function (days) {
-    return this.getMaxPrice(Math.floor(days / 2)) + this.getMinPrice(Math.ceil(days / 2));
+    return (this.getMaxPrice(days) + this.getMinPrice(days)) / 2;
 }
 
 Coin.prototype.calculateStatistic = function (...params) {
@@ -77,6 +77,15 @@ function getDaysCount(months) {
  */
 
 function tokenChoice(months) {
+    if (!Array.isArray(months) ||
+        months.some(m =>
+            !Number.isInteger(m.month) ||
+            !Number.isInteger(m.year) ||
+            m.month < 1 || m.month > 12 ||
+            m.year < 1)) {
+        throw new Error();
+    }
+
     let bestStat = 0;
     let bestTokenName = "";
     const daysCount = getDaysCount(months);
