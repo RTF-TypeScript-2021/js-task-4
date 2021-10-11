@@ -5,37 +5,31 @@
  */
 
 function getHead() {
-    let head = {
+    return {
         glasses: 1
-    };
-
-    return head;
+    }
 }
 
 function getTable() {
-    let table = {
+    return {
         pen: 3,
-    };
-    
-    return table;
+        __proto__: getHead()
+    }
 }
 
 function getBed() {
-    let bed = {
+    return {
         sheet: 1,
         pillow: 2,
-    };
-
-    return bed;
+        __proto__: getTable()
+    }
 }
 
 function getPockets() {
-    let pockets = {
+    return {
         money: 2000,
-    };
-    
-
-    return pockets;
+        __proto__: getBed()
+    }
 }
 
 module.exports.getHead = getHead;
