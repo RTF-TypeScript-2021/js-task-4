@@ -44,14 +44,37 @@ const tokens = {
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+ function Coin(token) { 
+    if (!(token in tokens)) {
+        throw new Error("Invald argument");
+    }
+    this.name = token;
+    this.price = tokens[token].price.slice(0, 1);
+    this.priceChange24h = tokens[token].priceChange24h.slice(0, 1);
+}
+
+Coin.prototype.estimateIncome = function(time){
+    return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1);
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice(months) {
+    let max = 0;
+    let mostProfitableToken = "";
+    const time = new Date(months[0]["year"], months[0]["month"] + 1);
+    for (let token in tokens) {
+        const income = new Coin(token).estimateIncome(time);
+        if (income > max) {
+            max = income;
+            mostProfitableToken = token;
+        }
+    }
+    return mostProfitableToken;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
