@@ -54,10 +54,20 @@ function Coin(token) {
 
 }
 
-Coin.prototype.calculatePrice = function(periodOfTime) {
+Coin.prototype.calculateMaxIncome = function(periodOfTime) {
     const multiplier = (1 + (this.priceChange24h/100))**periodOfTime;
 
-    return this.price*multiplier;
+    return this.price*multiplier - this.price;
+}
+
+Coin.prototype.calculateMinus = function(periodOfTime) {
+    const multiplier = (1 - (this.priceChange24h/100))**periodOfTime;
+
+    return this.price*multiplier - this.price;
+}
+
+Coin.prototype.calculateAverage = function(periodOfTime) {
+    return (this.calculateMaxIncome(periodOfTime) + this.calculateMinus(periodOfTime))/2
 }
 /**
  * 
@@ -66,10 +76,13 @@ Coin.prototype.calculatePrice = function(periodOfTime) {
  */
 function tokenChoice(months) { 
     const periodOfTime = Math.floor((new Date(months[0].year, months[0].month - 1).getTime() - Date.now())/86400000);
+    if (periodOfTime <= 0) {
+        throw new Error("Время некрректно");
+    }
     let priceAtDate = 0;
     let bestCoin;
     for(const token in tokens) {
-        const price = new Coin(token).calculatePrice(periodOfTime);
+        const price = new Coin(token).calculateAverage(periodOfTime);
         if (price > priceAtDate) {
             priceAtDate = price;
             bestCoin = token;
@@ -78,5 +91,5 @@ function tokenChoice(months) {
 
     return bestCoin;
 }
-
+console.log(tokenChoice([{ month: 11, year: 2021 }]))
 module.exports.tokenChoice = tokenChoice;
