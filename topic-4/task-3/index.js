@@ -3,16 +3,15 @@
     Когда мы кормим одного хомяка, второй тоже наедается. Почему? Как это исправить?
  */
 
-let hamster = {
-    stomach: [],
-
+const hamster = {
     eat(food) {
         this.stomach.push(food);
     }
 };
 
 function getSpeedy() {
-    let speedy = {
+    const speedy = {
+        stomach: [],
         __proto__: hamster
     };
 
@@ -20,7 +19,8 @@ function getSpeedy() {
 }
 
 function getLazy() {
-    let lazy = {
+    const lazy = {
+        stomach: [],
         __proto__: hamster
     };
 

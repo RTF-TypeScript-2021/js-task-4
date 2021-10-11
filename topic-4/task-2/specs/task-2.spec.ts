@@ -29,3 +29,17 @@ test('Remove something', () => {
     newHamburger.removeTopping(Hamburger.TOPPING_SPICE);
     expect(newHamburger.getToppings().length).toEqual(1);
 })
+
+
+test('Throw Error',()=>{
+    let newHamburger = new Hamburger(Hamburger.SIZE_SMALL, Hamburger.STUFFING_CHEESE);
+    expect(()=>{
+        newHamburger.addTopping(Hamburger.TOPPING_KETCHUP)
+    }).toThrow();
+    expect(()=>{
+        newHamburger.removeTopping(Hamburger.TOPPING_MAYO)
+    }).toThrow();
+    expect(()=>{
+        newHamburger = new Hamburger(Hamburger.SIZE_MEDIUM,Hamburger.STUFFING_MEAT);
+    }).toThrow();
+})
