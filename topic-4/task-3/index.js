@@ -4,8 +4,6 @@
  */
 
 const hamster = {
-    stomach: [],
-
     eat(food) {
         this.stomach.push(food);
     }
