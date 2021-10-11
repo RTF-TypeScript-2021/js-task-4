@@ -13,7 +13,8 @@ let hamster = {
 
 function getSpeedy() {
     let speedy = {
-        __proto__: hamster
+        __proto__: hamster,
+        stomach: []
     };
 
     return speedy;
@@ -21,7 +22,8 @@ function getSpeedy() {
 
 function getLazy() {
     let lazy = {
-        __proto__: hamster
+        __proto__: hamster,
+        stomach: []
     };
 
     return lazy;
