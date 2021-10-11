@@ -44,14 +44,47 @@ const tokens = {
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin(token) {
+    if (!token in tokens) {
+        throw new Error("The input data is not a token");
+    }
+    this.name = token;
+    this.price = tokens[token].price.slice(0, 1);
+    this.priceChange24h = tokens[token].priceChange24h.slice(0, 1);
+}
+
+Coin.prototype.getCost = function (countDay) {
+    return (1 + this.priceChange24h / 100) ** countDay - (1 / this.price);
+}
+
+function getDate(months) {
+    const timeConst =  1000 * 60 * 60 * 24;
+
+    return Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / timeConst);
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice(months) {
+    let mostProfitableToken = -1;
+    let valueOfMostProfitableToken = -1;
+    const countDay = getDate(months);
+
+    for (const token in tokens) {
+        const coin = new Coin(token);
+        const costCoin = coin.getCost(countDay);
+
+        if (costCoin > valueOfMostProfitableToken) {
+            mostProfitableToken = coin;
+            valueOfMostProfitableToken = costCoin;
+        }
+    }
+
+    return mostProfitableToken.name;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
