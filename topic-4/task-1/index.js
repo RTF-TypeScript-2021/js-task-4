@@ -39,18 +39,6 @@ const tokens = {
     }
 }
 
-/*
-function randomCLT(max, min, n=10) {
-    let sum = 0;
-    for (let i = 0; i < n; i++){
-        sum += Math.random();
-    }
-    const random = sum/n;
-    const result = (min*(1-random)+max*random);
-
-    return result;
-}
-*/
 
 const checkVasya = 5000;
 /**
@@ -63,15 +51,7 @@ function Coin(token) {
     this.priceChange24h = Number.parseFloat(tokens[token].priceChange24h)/100;
     this.amount = Math.floor(checkVasya / this.price);
 }
-/*
-Coin.prototype.updatePrice = function(){
-    const procent = randomCLT(1-this.priceChange24h, 1 + this.priceChange24h);
-    this.price = this.price * procent;
-}
-Coin.prototype.getProfit = function(){
-    return this.amount * this.price;
-}
-*/
+
 Coin.prototype.getProfitMid = function(days) {
     const min = this.price*Math.pow(1 - this.priceChange24h, days);
     const max = this.price*Math.pow(1 + this.priceChange24h, days);
@@ -85,20 +65,21 @@ Coin.prototype.getProfitMid = function(days) {
  * @return название токена
  */
 function tokenChoice(months) {
-    if(!Array.isArray(months)){
-        new Error("month must be objects array");
+    if(!Array.isArray(months)) {
+        throw new Error("month must be objects array");
     }
-    if(!months.every(obj => Number.isInteger(obj.month)
+    if(months.length === 0 || !months.every(obj => Number.isInteger(obj.month)
         && Number.isInteger(obj.year) 
+        && obj.year > 2000
         && obj.month>=0 
         && obj.month<=11)) {
-        new Error("Invalid item of months array");
+        throw  new Error("Invalid item of months array");
     }
     const totalDays = months.reduce((days, obj) => 
         days + new Date(obj.year, obj.month,0).getDate(), 0
     );
     const keys = Object.keys(tokens);
-    let token = 0;
+    let token;
     let bestCoin = new Coin(keys[0]);
     for(const key of keys) {
         token = new Coin(key);
@@ -109,6 +90,5 @@ function tokenChoice(months) {
 
     return bestCoin.name;
 }
-
 
 module.exports.tokenChoice = tokenChoice;
