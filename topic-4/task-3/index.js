@@ -4,36 +4,32 @@
  */
 
 const hamster = {
-
+    stomach: [],
     eat(food) {
         this.stomach.push(food);
     }
 };
 
 function getSpeedy() {
-    const speedy = {       
-        stomach: [],
-        __proto__: hamster,
-    };
+    const speedy = Object.create(hamster);
+    speedy.stomach = [];
 
     return speedy;
 }
 
 function getLazy() {
-    const lazy = {
-        stomach: [],
-        __proto__: hamster,
-    };
+    const lazy = Object.create(hamster)
+    lazy.stomach = [];
 
     return lazy;
 }
 // Этот хомяк нашёл еду
 const a = getSpeedy();
 const b = getLazy();
-a.eat("apple");
-console.log(a.stomach); // apple
+a.eat("apple"); // apple
 b.eat('banana')
 // У этого хомяка теперь нету еды
+console.log(a.stomach);
 console.log(b.stomach); // он пустой
 console.log(hamster.stomach) //У родителя тоже ничего нету
 
