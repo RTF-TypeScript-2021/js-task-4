@@ -68,14 +68,12 @@ const toppings = {
 }
 
 function Hamburger(size, stuffing) {
-    if (!(size in sizes) || !(stuffing in stuffings)) {
+    if (!(size in sizes)|| !(stuffing in stuffings)) {
         throw new Error("Wrong args");
     }
     this.size = size;
     this.stuffing = stuffing;
     this.currToppings = [];
-    this.price = sizes[size].price + stuffings[stuffing].price;
-    this.kal = sizes[size].kal + stuffings[stuffing].kal;
 }
  
 /*Добавить добавку к гамбургеру. Можно добавить несколько
@@ -84,11 +82,9 @@ function Hamburger(size, stuffing) {
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
     if (!(topping in toppings) || this.currToppings.includes(topping)) {
-        throw new Error();
+        throw new Error("Incorrect topping");
     }
     this.currToppings.push(topping);
-    this.price += toppings[topping].price;
-    this.kal += toppings[topping].kal;
 }
  
 /* Убрать добавку, при условии, что она ранее была
@@ -97,11 +93,9 @@ Hamburger.prototype.addTopping = function (topping) {
  * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.removeTopping = function (topping) {
     if (!(topping in toppings) || !this.currToppings.includes(topping)) {
-        throw new Error("T_T");
+        throw new Error("Incorrect topping");
     }
     this.currToppings = this.currToppings.filter(x => x !== topping);
-    this.price -= toppings[topping].price;
-    this.kal -= toppings[topping].kal;
 }
  
 /* Получить список добавок.
@@ -124,14 +118,18 @@ Hamburger.prototype.getStuffing = function () {
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
-    return this.price;
+    return this.getToppings()
+        .reduce((sum, curr) => sum + toppings[curr].price,
+            sizes[this.size].price + stuffings[this.stuffing].price);
 }
  
  
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
-    return this.kal;
+    return this.getToppings()
+        .reduce((sum, curr) => sum + toppings[curr].kal,
+            sizes[this.size].kal + stuffings[this.stuffing].kal);
 }
 
 module.exports.Hamburger = Hamburger;

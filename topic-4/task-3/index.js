@@ -4,35 +4,35 @@
  */
 
 const hamster = {
+    stomach: [],
     eat(food) {
         this.stomach.push(food);
     }
 };
 
 function getSpeedy() {
-    const speedy = {
+    return {
         stomach: [],
         __proto__: hamster
     };
-
-    return speedy;
 }
 
 function getLazy() {
-    const lazy = {
+    return {
         stomach: [],
-        __proto__: hamster
+        __proto__: hamster  //Сократил код, вывод такой же
     };
-
-    return lazy;
 }
 
 // Этот хомяк нашёл еду
-getSpeedy().eat("apple");
-console.log(getSpeedy().stomach); // apple
+const speedy = getSpeedy();
+speedy.eat("apple");
+console.log(speedy.stomach); // apple
 
 // У этого хомяка тоже есть еда. Почему? Исправьте
-console.log(getLazy().stomach); // apple
+const lazy = getLazy();
+console.log(lazy.stomach); // apple
+// Теперь в консоль выводится еда, съеденная хомяками
 
 
 module.exports.getSpeedy = getSpeedy;

@@ -49,8 +49,20 @@ function Coin(token) {
     this.price = tokens[token].price.slice(0, -1);
     this.priceChange24h = tokens[token].priceChange24h.slice(0, -1);
 }
-Coin.prototype.evaluateProfit = function (month) {
-    return this.price * (1 + this.priceChange24h / 100) ** month.getDate() - this.price;
+Coin.prototype.evaluateProfit = function (daysCount) {
+    const onlyIncreasing = this.calculateIncreasingProfit(daysCount);
+    const onlyDecreasing = this.calculateDecreasingProfit(daysCount);
+    const halfIncDec = this.calculateIncreasingProfit(Math.floor(daysCount / 2))
+        + this.calculateDecreasingProfit(Math.ceil(daysCount));
+
+    return (onlyIncreasing + onlyIncreasing + halfIncDec) / 3 - this.price;
+}
+
+Coin.prototype.calculateIncreasingProfit = function (daysCount) {
+    return this.price * (1 + this.priceChange24h / 100) ** daysCount;
+}
+Coin.prototype.calculateDecreasingProfit = function (daysCount) {
+    return this.price * (1 - this.priceChange24h / 100) ** daysCount;
 }
 /**
  * 
@@ -60,14 +72,17 @@ Coin.prototype.evaluateProfit = function (month) {
 function tokenChoice(months) {
     let bestToken;
     let maxValue = 0;
-    const month = new Date(months[0]["year"], months[0]["month"]);
+    const daysCount = Math.floor(new Date(months[0]["year"], months[0]["month"]).getTime() -
+        new Date(months[months.length-1]["year"], months[months.length-1]["month"]).getTime()
+        / (1000*60*60*24));
     for (const token in tokens) {
-        const profit = new Coin(token).evaluateProfit(month);
+        const profit = new Coin(token).evaluateProfit(daysCount);
         if (profit > maxValue) {
             maxValue = profit;
             bestToken = token;
         }
     }
+
     
     return bestToken;
 }
