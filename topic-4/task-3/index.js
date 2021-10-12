@@ -24,5 +24,12 @@ function getLazy() {
     return new Hamster(hamsterTypes.lazy);
 }
 
+// Этот хомяк нашёл еду
+const speedy = getSpeedy();
+speedy.eat("apple");
+console.log(speedy.stomach); // apple
+
+console.log(getLazy().stomach); // empty
+
 module.exports.getSpeedy = getSpeedy;
 module.exports.getLazy = getLazy;
