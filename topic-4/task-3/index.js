@@ -28,12 +28,15 @@ function getLazy() {
 }
 
 // Этот хомяк нашёл еду
-getSpeedy().eat("apple");
-console.log(getSpeedy().stomach); // apple
+let speedy = getSpeedy();
+speedy.eat("apple");
+console.log(speedy.stomach); // apple
 
 // У этого хомяка тоже есть еда. Почему? Исправьте
-console.log(getLazy().stomach); // apple
+let lazy = getLazy();
+console.log(lazy.stomach); // apple
 
+debugger
 
 module.exports.getSpeedy = getSpeedy;
 module.exports.getLazy = getLazy;

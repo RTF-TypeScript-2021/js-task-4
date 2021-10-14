@@ -108,7 +108,7 @@ function tokenChoice(months) {
         const end = new Date(months[months.length-1].year,months[months.length-1].month).getTime();
         const transferMillisecondsToDays = 1000*60*60*24
 
-        return (end-start) / transferMillisecondsToDays;
+        return ((end-start) / transferMillisecondsToDays)+30;
     })(months)
 
     let bestStatistic = 0;
@@ -124,6 +124,4 @@ function tokenChoice(months) {
     return bestToken
 
 }
-
-
 module.exports.tokenChoice = tokenChoice;

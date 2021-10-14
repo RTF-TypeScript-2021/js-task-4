@@ -1,4 +1,4 @@
-/**
+    /**
 * Некая сеть фастфудов предлагает несколько видов гамбургеров:
 * маленький (50 тугриков, 20 калорий)
 * большой (100 тугриков, 40 калорий)
@@ -58,7 +58,7 @@ function Hamburger(size, stuffing) {
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
     const keysDictionary = Object.keys(this.dictValues);
-    this.AddOrRemoveToppings(keysDictionary,[topping],(element)=>this.listValues.push([element,...this.dictValues[element]]))
+    this.AddOrRemoveToppings(keysDictionary.filter((x)=>x.startsWith("TOPPING")),[topping],(element)=>this.listValues.push([element,...this.dictValues[element]]))
 }
 
 Hamburger.prototype.AddOrRemoveToppings= function (keys,topping,func){
