@@ -59,7 +59,7 @@ function Coin(token) {
  */
 
 Coin.prototype.income = function(time){
-    return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1);
+    return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1); //если непонятна для чего эта формула, то она вычисляет сложный процент
 }
 
 function tokenChoice(months) { 
