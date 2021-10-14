@@ -44,14 +44,50 @@ const tokens = {
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin(token) { 
+    if (!(token in tokens)) {
+        throw Error('Неверный тип данных token');
+    }
+    this.price = parseFloat(tokens[token].price);
+    this.priceChange24h = parseFloat(tokens[token].priceChange24h);
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+
+Coin.prototype.income = function(time){
+    return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1);
+}
+
+function tokenChoice(months) { 
+    if (!Array.isArray(months)) {
+        throw Error('Это не массив')
+    }
+
+    for (const month of months) {
+        if ( !Number.isInteger(month.month) || !Number.isInteger(month.year) 
+        || month.month < 1 || month.month > 12 
+        || month.year < 0) {
+            throw Error('Неверный тип данных')
+        }
+    }
+
+    const date = new Date(months[0]["year"], months[0]["month"] + 1);
+    let max = -1;
+    let tokenChoiced = new String();
+    for (const token in tokens) {
+        const income = new Coin(token).income(date);
+        if (income > max) {
+            max = income;
+            tokenChoiced = token;
+        }
+    }
+
+    return tokenChoiced;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
