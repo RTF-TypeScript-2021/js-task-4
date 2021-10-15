@@ -12,18 +12,22 @@ const hamster = {
 };
 
 function getSpeedy() {
-    return {
-        __proto__: hamster,
-        stomach: []
-    }
+    const speedy = {
+        stomach: [],
+        __proto__: hamster
+    };
+
+    return speedy;
 }   
 
 function getLazy() {
-    return {
-        __proto__: hamster,
-        stomach: []
-    }
-}
+    const lazy = {
+        stomach: [],
+        __proto__: hamster
+    };
+
+    return lazy;
+}    
 
 // Этот хомяк нашёл еду
 getSpeedy().eat("apple");
