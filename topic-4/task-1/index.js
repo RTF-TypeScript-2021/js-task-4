@@ -53,14 +53,38 @@ function Coin(token) {
     this.priceChange24h = tokens[token].priceChange24h.slice(0, 1);
 }
 
-Coin.prototype.getCost = function (countDay) {
-    return (1 + this.priceChange24h / 100) ** countDay - (1 / this.price);
+Coin.prototype.getMinValue = function (countDays) {
+    let minValue = 0;
+    for (let i = 0; i < countDays; i++) {
+        minValue *= (1 - this.priceChange24h / 100);
+    }
+
+    return minValue;
 }
 
-function getDate(months) {
-    const timeConst =  1000 * 60 * 60 * 24;
+Coin.prototype.getMaxValue = function (countDays) {
+    let maxValue = 0;
+    for (let i = 0; i < countDays; i++) {
+        maxValue *= (1 + this.priceChange24h / 100);
+    }
 
-    return Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / timeConst);
+    return maxValue;
+}
+
+Coin.prototype.getMiddleValue = function (countDays) {
+    if (!Number.isInteger(countDays) || countDays < 0) {
+        throw new Error("Count days has wrong type");
+    }
+
+    return Math.round((this.getMinValue(countDays) + this.getMaxValue(countDays)) / 2);
+}
+
+function getCountDays(months) {
+    const timeConst =  1000 * 60 * 60 * 24;
+    const startDay = new Date(months[0].year, months[0].month - 1);
+    const endDay = new Date(months[months.length - 1].year, months[months.length - 1].month);
+
+    return Math.floor((endDay.getTime() - startDay.getDay()) / timeConst);
 }
 
 /**
@@ -69,21 +93,27 @@ function getDate(months) {
  * @return название токена
  */
 function tokenChoice(months) {
-    let mostProfitableToken = -1;
-    let valueOfMostProfitableToken = -1;
-    const countDay = getDate(months);
-
-    for (const token in tokens) {
-        const coin = new Coin(token);
-        const costCoin = coin.getCost(countDay);
-
-        if (costCoin > valueOfMostProfitableToken) {
-            mostProfitableToken = coin;
-            valueOfMostProfitableToken = costCoin;
+    for (let i = 0; i < months.length; i++) {
+        if (months[i].month > 12 || months[i].year < 1
+            || !Number.isInteger(months[i].month) || !Number.isInteger(months[i].year)) {
+            throw new Error("The input date has wrong type");
         }
     }
 
-    return mostProfitableToken.name;
+    const countDays = getCountDays(months);
+    let profitValue = -1;
+    let profitToken = {};
+
+    for (const token in tokens) {
+        const coin = new Coin(token);
+        const middleValue = coin.getMiddleValue(countDays);
+        if (middleValue > profitValue) {
+            profitValue = middleValue;
+            profitToken = token;
+        }
+    }
+
+    return profitToken;
 }
 
 
