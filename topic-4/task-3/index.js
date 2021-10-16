@@ -7,21 +7,19 @@ const hamster = {
     stomach: [],
 
     eat(food) {
-        this.stomach.push(food);
+        this.stomach = food;
     }
 };
 
 function getSpeedy() {
     return {
-        __proto__: hamster,
-        stomach: []
+        __proto__: hamster
     };
 }
 
 function getLazy() {
     return {
-        __proto__: hamster,
-        stomach: []
+        __proto__: hamster
     };
 }
 
