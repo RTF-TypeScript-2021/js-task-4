@@ -7,8 +7,8 @@
 * салатом (+ 20 тугриков, + 5 калорий)
 * картофелем (+ 15 тугриков, + 10 калорий)
 * Дополнительно, гамбургер можно посыпать приправой (+ 15 тугриков, 0 калорий) и полить майонезом (+ 20 тугриков, + 5 калорий).
-* Напиши программу, расчиытвающую стоимость и калорийность гамбургера. Используй ООП подход (подсказка: нужен класс Гамбургер, 
-* константы, методы для выбора опций и рассчета нужных величин).
+* Напиши программу, рассчитывающую стоимость и калорийность гамбургера. Используй ООП подход (подсказка: нужен класс Гамбургер,
+* константы, методы для выбора опций и расчета нужных величин).
 * Код должен быть защищен от ошибок. Представь, что твоим классом будет пользоваться другой программист. 
 * Если он передает неправильный тип гамбургера, например, или неправильный вид добавки, должно выбрасываться исключение 
 * (ошибка не должна молча игнорироваться).
@@ -69,7 +69,30 @@ const kalAndCostStuffingOfHamburgers = {
     }
 }
 
+function isNotRightRequestForBurger(size, stuffing) {
+    let errorSizeFlag = true;
+    let errorStuffingFlag = true;
+    for (const baseSize in kalAndCostSizeOfHamburgers) {
+        if (baseSize === size) {
+            errorSizeFlag = false;
+            break;
+        }
+    }
+    for (const baseStuffing in kalAndCostStuffingOfHamburgers) {
+        if (baseStuffing === stuffing) {
+            errorStuffingFlag = false;
+            break;
+        }
+    }
+
+    return errorSizeFlag || errorStuffingFlag;
+}
+
 function Hamburger(size, stuffing) {
+    if (isNotRightRequestForBurger(size, stuffing)) {
+        throw new Error("The input data for Hamburger has wrong type");
+    }
+
     this.size = size;
     this.stuffing = stuffing;
     this.topping = [];
@@ -108,7 +131,7 @@ Hamburger.prototype.getToppings = function () {
 }
  
 /* Узнать размер гамбургера */
-Hamburger.prototype.getSize = function (size) {
+Hamburger.prototype.getSize = function () {
     return this.size;
 }
  
