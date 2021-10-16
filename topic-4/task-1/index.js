@@ -21,6 +21,7 @@
 
 const { TokenClass, textSpanIntersectsWithPosition } = require("typescript");
 
+const budget_Vasiliya = 5000;
 
 const tokens = {
     ETH: {
@@ -53,12 +54,13 @@ function Coin(token) {
     this.name = token;
     this.price = tokens[token].price.slice(0, -1);
     this.priceChange24h = tokens[token].priceChange24h.slice(0, -1);
- }
+}
 
 Coin.prototype.Calculate = function(countDays, sign){
     for(let i = 0; i < countDays; i++) {
         this.price *= (1 - (sign * this.priceChange24h / 100));
     }
+
     return this.price;
 }
 
@@ -73,6 +75,7 @@ Coin.prototype.MinToken = function(countDays) {
 Coin.prototype.MiddleToken = function(countDays) {
     this.price = this.Calculate(countDays, -1);
     this.price *= this.Calculate(countDays, 1);
+
     return this.price;
 }
 
@@ -85,7 +88,8 @@ Coin.prototype.MeanValue = function(countDays) {
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { 
+function tokenChoice(months) {
+    
     if(months["month"] > 12 || months["month"] < 1 || !(Number.isInteger(months[0]["month"])) || !(Number.isInteger(months[0]["year"]))) {
         throw new Error("incorect data")
     }
@@ -93,13 +97,14 @@ function tokenChoice(months) {
     const day = Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / oneMonth);
     let tokenName;
     let maxMonth = 0;
-    for(let i in tokens) {
+    for(const i in tokens) {
         const coin = new Coin(i).MeanValue(day);
-        if(coin > maxMonth) {
+        if(coin > maxMonth && coin > budget_Vasiliya) {
             maxMonth = coin;
             tokenName = i;
         }
     }
+
     return tokenName;
 }
 
