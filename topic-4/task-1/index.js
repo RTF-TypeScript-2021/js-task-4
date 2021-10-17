@@ -46,7 +46,7 @@ const tokens = {
  */
 function Coin(token) {
     this.name = token;
-    this.price = Number(tokens[token].price.slice(0, -1));
+    this.price = parseFloat(tokens[token].price);
     this.priceChange24h = Number(tokens[token].priceChange24h.slice(0,-1)) / 100;
 }
 
