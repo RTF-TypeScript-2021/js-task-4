@@ -24,40 +24,40 @@
 */
 
 const sizeAndKal = {
-  'SIZE_SMALL' : {
-    kal: 20,
-    price: 50
-  },
-  'SIZE_LARGE' : {
-    kal: 40,
-    price: 100
-  }
+    'SIZE_SMALL' : {
+        kal: 20,
+        price: 50
+    },
+    'SIZE_LARGE' : {
+        kal: 40,
+        price: 100
+    }
 }
 
 const stuffingAndKal = {
-  'STUFFING_CHEESE' : {
-    kal: 20,
-    price: 10
-  },
-  'STUFFING_SALAD' : {
-    kal: 5, 
-    price: 20
-  },
-  'STUFFING_POTATO' : {
-    kal: 10,
-    price: 15
-  }
+    'STUFFING_CHEESE' : {
+        kal: 20,
+        price: 10
+    },
+    'STUFFING_SALAD' : {
+        kal: 5, 
+        price: 20
+    },
+    'STUFFING_POTATO' : {
+        kal: 10,
+        price: 15
+    }
 }
 
 const toppingAndKal = {
-  'TOPPING_MAYO' : {
-    kal: 5, 
-    price: 20
-  },
-  'TOPPING_SPICE' : {
-    kal: 0,
-    price: 15
-  }
+    'TOPPING_MAYO' : {
+        kal: 5, 
+        price: 20
+    },
+    'TOPPING_SPICE' : {
+        kal: 0,
+        price: 15
+    }
 }
 
 /* Размеры, виды начинок и добавок */
@@ -70,9 +70,15 @@ Hamburger.TOPPING_MAYO = 'TOPPING_MAYO'; //price 20 kal 5
 Hamburger.TOPPING_SPICE = 'TOPPING_SPICE'; //price 15
 
 function Hamburger(size, stuffing) {
-  this.size = size;
-  this.stuffing = stuffing;
-  this.topping = [];
+    if ((size !== Hamburger.SIZE_SMALL && size !== Hamburger.SIZE_LARGE)
+      || (stuffing !== Hamburger.STUFFING_CHEESE &&
+        stuffing !== Hamburger.STUFFING_POTATO &&
+        stuffing !== Hamburger.TOPPING_MAYO)){
+        throw new Error();
+    }
+    this.size = size;
+    this.stuffing = stuffing;
+    this.topping = [];
  
 }
  
@@ -81,13 +87,13 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
-  if (topping !== Hamburger.TOPPING_MAYO 
+    if (topping !== Hamburger.TOPPING_MAYO 
     && topping !== Hamburger.TOPPING_SPICE){
-    throw new Error('HamburgerException');
-  }
-  if (!this.topping.includes(topping)){
-    this.topping.push(topping);
-  }
+        throw new Error('HamburgerException');
+    }
+    if (!this.topping.includes(topping)){
+        this.topping.push(topping);
+    }
 }
 
  
@@ -95,58 +101,58 @@ Hamburger.prototype.addTopping = function (topping) {
  * добавлена.
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
- Hamburger.prototype.removeTopping = function (topping) {
-   if (topping !== Hamburger.TOPPING_MAYO 
+Hamburger.prototype.removeTopping = function (topping) {
+    if (topping !== Hamburger.TOPPING_MAYO 
     && topping !== Hamburger.TOPPING_SPICE
     && !this.topping.includes(topping)){
-      throw new Error('HamburgerException');
+        throw new Error('HamburgerException');
     }
 
-   this.topping = this.topping.filter(el => el !== topping);
- }
+    this.topping = this.topping.filter(el => el !== topping);
+}
  
 /* Получить список добавок.
  * @return {Array} Массив добавленных добавок, содержит константы
  *                 Hamburger.TOPPING_**/
- Hamburger.prototype.getToppings = function () {
+Hamburger.prototype.getToppings = function () {
     return this.topping;
- }
+}
  
 /* Узнать размер гамбургера */
 Hamburger.prototype.getSize = function (size) { 
     return this.size;
- }
+}
  
 /* Узнать начинку гамбургера */
 Hamburger.prototype.getStuffing = function () {
-  return this.stuffing;
+    return this.stuffing;
 }
  
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
-  let hamburgerPrice = 0;
+    let hamburgerPrice = 0;
 
-  hamburgerPrice += sizeAndKal[this.size].price + stuffingAndKal[this.stuffing].price;
-  for(let el of this.topping){
-    hamburgerPrice += toppingAndKal[el].price;
-  }
+    hamburgerPrice += sizeAndKal[this.size].price + stuffingAndKal[this.stuffing].price;
+    for(const el of this.topping){
+        hamburgerPrice += toppingAndKal[el].price;
+    }
 
-  return hamburgerPrice;
+    return hamburgerPrice;
 }
  
  
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
-  let calorieHamburger = 0;
+    let calorieHamburger = 0;
   
-  calorieHamburger += sizeAndKal[this.size].kal + stuffingAndKal[this.stuffing].kal;
-  for(let el of this.topping){
-    calorieHamburger += toppingAndKal[el].kal;
-  }
+    calorieHamburger += sizeAndKal[this.size].kal + stuffingAndKal[this.stuffing].kal;
+    for(const el of this.topping){
+        calorieHamburger += toppingAndKal[el].kal;
+    }
 
-  return calorieHamburger;
+    return calorieHamburger;
 }
 
 module.exports.Hamburger = Hamburger;

@@ -39,7 +39,6 @@ const tokens = {
     }
 }
 
-const priceUser = 5000;
 /**
  * 
  * @param {*} token токен
@@ -52,13 +51,8 @@ function Coin(token) {
     this.price = tokens[token].price.slice(0,1);
     this.priceChange24h = tokens[token].priceChange24h.slice(0,1);
 
-    Coin.prototype.getPrice = function(months){
-        const constTime = 1000 * 60 * 60 * 24;
-        const currentDate = new Date();
-        const dateAfterTime = new Date(months[0]['year'], months[0]['month']);
-        const countDay = Math.floor((dateAfterTime - currentDate) / constTime);
-
-        return (this.priceChange24h / 100) ** countDay * this.price;
+    Coin.prototype.percent = function(time){
+        return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1); 
     }
 }
 
@@ -68,22 +62,29 @@ function Coin(token) {
  * @return название токена
  */
 function tokenChoice(months) {
+    if (!Array.isArray(months)) {
+        throw Error();
+    }
+    for (const month of months) {
+        if ( !Number.isInteger(month.month) || !Number.isInteger(month.year) 
+        || month.month < 1 || month.month > 12 
+        || month.year < 0) {
+            throw Error();
+        }
+    }
+    
+    const date = new Date(months[0]['year'], months[0]['month']);
+    let max = -1;
     let nameBestToken;
-    let maxPrice = -1;
-
-    for (const token in tokens){
-        const coin = new Coin(token);
-        if (coin.price <= priceUser){
-            const price = coin.getPrice(months);
-            if (price > maxPrice){
-                maxPrice = price;
-                nameBestToken = token;
-            }
+    for (const token in tokens) {
+        const percent = new Coin(token).percent(date);
+        if (percent > max) {
+            max = percent;
+            nameBestToken = token;
         }
     }
 
     return nameBestToken;
 }
-
 
 module.exports.tokenChoice = tokenChoice;
