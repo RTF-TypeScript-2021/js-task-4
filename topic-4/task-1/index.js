@@ -45,6 +45,22 @@ const tokens = {
  * @param {*} token токен
  */
 function Coin(token) {
+    this.name = token
+    this.price = Number(tokens[token].price.slice(0, -1))
+    this.priceIncrease = Number(tokens[token].priceChange24h.slice(0, -1)) / 100
+}
+
+Coin.prototype.getProfit = function(budget, daysCount){
+    return budget * (1 + this.priceIncrease) ** daysCount - budget;
+}
+
+Coin.prototype.getDecline = function(budget, daysCount){
+    const startBudget = budget;
+    for (const i in daysCount){
+        budget = budget * (1 - this.priceIncrease);
+    }
+
+    return budget - startBudget;
 }
 
 /**
@@ -56,19 +72,29 @@ function tokenChoice(months) {
     if (typeof months[0].year !== "number" || typeof months[0].month !== "number"){
         throw "Incorrect date"
     }
-    const now = new Date();
-    const date = new Date(months[0].year, months[0].month);
-    const daysCount = (date - now) / 86400000;
-    let maxPrice = ['', 0]
+
+    let daysCount = 0
+    for (const i in months) {
+        const start = new Date(months[0].year, months[0].month - 1);
+        const end = new Date(months[0].year, months[0].month);
+        daysCount += (end - start) / 86400000;
+    }
+
+    let maxPrice = 0;
+    let bestToken = '';
 
     for (const name in tokens){
-        const price = [name, 5000 * Number(1 + tokens[name].priceChange24h.slice(0, -1)) ** daysCount]
-        if (price[1] > maxPrice[1]){
+        const coin = new Coin(name)
+        const priceIncrease = coin.getProfit(5000, daysCount)
+        const priceDecrease = coin.getDecline(5000, daysCount)
+        const price = (priceIncrease + priceDecrease) / 2
+        if (price > maxPrice){
             maxPrice = price;
+            bestToken = name;
         }
     }
 
-    return maxPrice[0];
+    return bestToken;
 }
 
 
