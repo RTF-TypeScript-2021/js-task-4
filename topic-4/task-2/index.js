@@ -57,7 +57,7 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
-    if(topping !== Hamburger.TOPPING_MAYO || topping !== Hamburger.TOPPING_SPICE || !this.topping.includes(topping)) {
+    if((topping !== Hamburger.TOPPING_MAYO || topping !== Hamburger.TOPPING_SPICE) && this.topping.includes(topping)) {
         throw "HamburgerException";
     }
     this.topping.push(topping);

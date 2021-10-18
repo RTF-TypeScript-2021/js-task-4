@@ -98,9 +98,9 @@ function tokenChoice(months) {
     let nameTok;
     let maxMoney = 0;
     for (const token in tokens) {
-        const coun = new Coin(token).averageValueToken(days);
-        if(coun > maxMoney) {
-            maxMoney = coun;
+        const tok = new Coin(token).averageValueToken(days);
+        if(tok > maxMoney) {
+            maxMoney = tok;
             nameTok = token;
         }
     }
