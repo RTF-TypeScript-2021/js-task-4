@@ -68,8 +68,10 @@ Coin.prototype.getDecline = function(budget, daysCount){
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
+
 function tokenChoice(months) {
-    if (typeof months[0].year !== "number" || typeof months[0].month !== "number"){
+    if (!Array.isArray(months) || months.filter(x => typeof x.year !== "number").length !== 0 ||
+        months.filter(x => typeof x.month !== "number").length !== 0){
         throw "Incorrect date"
     }
 
