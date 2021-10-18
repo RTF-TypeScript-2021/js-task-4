@@ -91,10 +91,10 @@ Coin.prototype.averageValueToken = function(countDays) {
  * @return название токена
  */
 function tokenChoice(months) { 
-    if(months["month"] > 12 || months["month"] < 1 || !Number.isInteger(months[0]["month"]) || !Number.isInteger(months[0]["year"])) {
+    if(months["month"] > 11 || months["month"] < 0 || !Number.isInteger(months[0]["month"]) || !Number.isInteger(months[0]["year"])) {
         throw new Error("Введена не дата")
     }
-    const days = Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / (1000*60*60*24));;
+    const days = Math.floor((new Date(months["year"], months["month"] + 1) - new Date()) / (1000*60*60*24));;
     let nameTok;
     let maxMon = 0;
     for (const token in tokens) {
