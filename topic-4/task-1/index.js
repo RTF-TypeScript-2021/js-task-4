@@ -96,11 +96,11 @@ function tokenChoice(months) {
     }
     const days = Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / (1000*60*60*24));;
     let nameTok;
-    let maxMon = 0;
+    let maxMoney = 0;
     for (const token in tokens) {
         const coun = new Coin(token).averageValueToken(days);
-        if(coun > maxMon) {
-            maxMon = coun;
+        if(coun > maxMoney) {
+            maxMoney = coun;
             nameTok = token;
         }
     }
