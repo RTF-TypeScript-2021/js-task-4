@@ -49,12 +49,8 @@ const tokens = {
         throw new Error("Invald argument");
     }
     this.name = token;
-    this.price = tokens[token].price.slice(0, 1);
-    this.priceChange24h = tokens[token].priceChange24h.slice(0, 1);
-}
-
-Coin.prototype.estimateIncome = function(time){
-    return this.price * ((1 + this.priceChange24h / 100) ** time.getDate() - 1);
+    this.price = parseFloat(tokens[token].price);
+    this.priceChange24h = Number(tokens[token].priceChange24h.slice(0,-1)) / 100;
 }
 
 /**
@@ -63,17 +59,22 @@ Coin.prototype.estimateIncome = function(time){
  * @return название токена
  */
 function tokenChoice(months) {
-    let max = 0;
-    let mostProfitableToken = "";
-    const time = new Date(months[0]["year"], months[0]["month"] + 1);
-    for (let token in tokens) {
-        const income = new Coin(token).estimateIncome(time);
-        if (income > max) {
-            max = income;
-            mostProfitableToken = token;
+    const start = new Date(months[0].year, months[0].month);
+    const end = new Date(months[months.length - 1].year, months[months.length - 1].month + 1);
+    const daysCount  = (end - start) / 86400000;
+    let maxProfit = 0;
+    let bestResult;
+
+    for (const token in tokens) {
+        const coin = new Coin(token);
+        const profit = coin.price * coin.priceChange24h ** daysCount;
+        if (profit > maxProfit) {
+            maxProfit = profit;
+            bestResult = coin.name;
         }
     }
-    return mostProfitableToken;
+
+    return bestResult;
 }
 
 
