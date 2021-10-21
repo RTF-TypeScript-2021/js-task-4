@@ -5,7 +5,7 @@
 
 let hamster = {
     stomach: [],
-
+    
     eat(food) {
         this.stomach.push(food);
     }
@@ -32,9 +32,15 @@ function getLazy() {
 // Этот хомяк нашёл еду
 getSpeedy().eat("apple");
 console.log(getSpeedy().stomach); // apple
+const speedy = getSpeedy();
+speedy.eat("apple");
+console.log(speedy.stomach);
 
 // У этого хомяка тоже есть еда. Почему? Исправьте
 console.log(getLazy().stomach); // apple
+// А этот уже не нашел 
+const lazy = getLazy();
+console.log(lazy.stomach);
 
 
 module.exports.getSpeedy = getSpeedy;
