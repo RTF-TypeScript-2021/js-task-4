@@ -53,17 +53,17 @@ const kal = {
 }
 
 function Hamburger(size, stuffing) {
-    if (!Hamburger.hasOwnProperty(stuffing)) {
-        throw new Error("Invalid argument");
-    }
     if (!Hamburger.hasOwnProperty(size)) {
-        throw new Error("Invalid argument");
+        throw new Error("Incorrect size");
+    }
+    if (!Hamburger.hasOwnProperty(stuffing)) {
+        throw new Error("Incorrect stuffing");
     }
     this.size = size;
     this.stuffing = stuffing;
-    this.topping = []
-    this.kal = kal[size] + kal[size];
+    this.topping = [];
     this.price = price[size] + price[stuffing];
+    this.kal = kal[size] + kal[size];
 }
  
 /*Добавить добавку к гамбургеру. Можно добавить несколько
@@ -72,10 +72,10 @@ function Hamburger(size, stuffing) {
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
     if (!Hamburger.hasOwnProperty(topping)) {
-        throw new Error("Invalid argument");
+        throw new Error("Incorrect topping");
     }
     if (this.topping.indexOf(topping) !== -1) {
-        throw new Error("Argument already exists");
+        throw new Error("This supplement is already available");
     }
     this.topping.push(topping);
     this.price += price[topping];
@@ -88,10 +88,10 @@ Hamburger.prototype.addTopping = function (topping) {
  * @throws {HamburgerException}  При неправильном использовании*/
  Hamburger.prototype.removeTopping = function (topping) {
     if (!Hamburger.hasOwnProperty(topping)) {
-        throw new Error("Invalid argument");
+        throw new Error("Incorrect topping");
     }
     if (this.topping.indexOf(topping) === -1) {
-        throw new Error("Argument is missing")
+        throw new Error("There is no such additive")
     }
     this.topping.splice(topping.indexOf(topping), 1);
     this.price -= price[topping];
