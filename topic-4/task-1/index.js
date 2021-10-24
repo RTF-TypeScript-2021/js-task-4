@@ -67,7 +67,7 @@ function tokenChoice(months) {
     }
     for (const month of months) {
         if ( !Number.isInteger(month.month) || !Number.isInteger(month.year) 
-        || month.month < 1 || month.month > 12 
+        || month.month < 0 || month.month > 11 
         || month.year < 0) {
             throw Error();
         }
