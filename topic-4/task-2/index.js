@@ -32,8 +32,43 @@ Hamburger.STUFFING_POTATO = 'STUFFING_POTATO' //price 15 kal 10
 Hamburger.TOPPING_MAYO = 'TOPPING_MAYO'; //price 20 kal 5
 Hamburger.TOPPING_SPICE = 'TOPPING_SPICE'; //price 15
 
+Hamburger.prototype.priceList = { 
+    SIZE_LARGE: {
+        kal: 40,
+        price: 100
+    },
+    SIZE_SMALL: {
+        kal: 20,
+        price: 50
+    },
+    STUFFING_CHEESE: {
+        kal: 20,
+        price: 10
+    },
+    STUFFING_POTATO: {
+        kal: 15,
+        price: 10
+    },
+    STUFFING_SALAD: {
+        kal: 5,
+        price: 20
+    },
+    TOPPING_MAYO: {
+        kal: 5,
+        price: 20
+    },
+    TOPPING_SPICE: {
+        price: 15
+    }
+};
+
 function Hamburger(size, stuffing) {
- 
+    this.size = size;
+    this.stuffing = stuffing;
+    this.toppings = [];
+    if (!(size in Hamburger) || !(stuffing in Hamburger)) {
+        throw new UserException("Invalid size and stuffing")
+    }
 }
  
 /*Добавить добавку к гамбургеру. Можно добавить несколько
@@ -41,37 +76,59 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
+    if (!(topping in Hamburger)) {
+        throw new HamburgerException ("Invalid topping");
+    };
+    this.toppings.push(topping);
 }
  
 /* Убрать добавку, при условии, что она ранее была
  * добавлена.
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
- Hamburger.prototype.removeTopping = function (topping) {
- }
+Hamburger.prototype.removeTopping = function (topping) {
+    if (!(topping in Hamburger)) {
+        throw new HamburgerException ("Invalid topping")
+    };
+    this.toppings.splice(this.toppings.indexOf(topping), 1);
+}
  
 /* Получить список добавок.
  * @return {Array} Массив добавленных добавок, содержит константы
  *                 Hamburger.TOPPING_**/
- Hamburger.prototype.getToppings = function () {
- }
+Hamburger.prototype.getToppings = function () {
+    return this.toppings;
+}
  
 /* Узнать размер гамбургера */
-Hamburger.prototype.getSize = function (size) {  }
+Hamburger.prototype.getSize = function (size) {  
+    return this.size;
+}
  
 /* Узнать начинку гамбургера */
 Hamburger.prototype.getStuffing = function () {
+    return this.stuffing;
 }
  
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
+    return this.getToppings().reduce((sum, topping) => sum + this.priceList[topping].price,
+        this.priceList[this.size].price + this.priceList[this.stuffing].price)
 }
  
  
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
+    return this.getToppings().reduce((sum, topping) => sum + this.priceList[topping].kal,
+        this.priceList[this.size].kal + this.priceList[this.stuffing].kal)
+
+}
+
+function HamburgerException(message) {
+    this.message = message;
+    this.exeptionName = "Invalid Hamburger";
 }
 
 module.exports.Hamburger = Hamburger;

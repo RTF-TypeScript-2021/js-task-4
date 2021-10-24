@@ -44,14 +44,68 @@ const tokens = {
  * 
  * @param {*} token токен
  */
-function Coin(token) { }
+function Coin(token) { 
+    if(!token in tokens){
+        throw UserException("Zero token")
+    }
+    this.price = tokens[token].price.slice(0, -1);
+    this.priceChange24h = tokens[token].priceChange24h.slice(0, -1);
+}
+Coin.prototype.getMaxValue = function(daysCount) {
+    let day = 0;
+    while (day < daysCount) {
+        this.price *= (1 + this.priceChange24h / 100);
+        day += 1
+    }
+
+    return this.price;
+}
+
+Coin.prototype.getMinValue = function(daysCount) {
+    let day = 0;
+    while (day < daysCount) {
+        this.price *= (1 - this.priceChange24h / 100);
+        day += 1
+    }
+
+    return this.price;
+}
+
+Coin.prototype.getMediumValue = function(daysCount) {
+    const maxValueFifty = this.getMaxValue(Math.round(daysCount / 2));
+    const minValueFifty = this.getMinValue(Math.ceil(daysCount / 2));
+
+    return maxValueFifty + minValueFifty;
+}
+
+Coin.prototype.getAvgValue = function(daysCount) {
+    return (this.getMaxValue(daysCount) + this.getMinValue(daysCount) + 
+    this.getMediumValue(daysCount)) / 3; 
+}
 
 /**
  * 
  * @param {*} months массив месяцев, формат {month, year}
  * @return название токена
  */
-function tokenChoice(months) { }
+function tokenChoice(months) { 
+    if(months["month"] > 12 || months["month"] < 1 ||
+     !Number.isInteger(months[0]["month"]) || !Number.isInteger(months[0]["year"])) {
+        throw new UserException("Invalid data")
+    }
+    const days = Math.floor((new Date(months[0]["year"], months[0]["month"] + 1) - new Date()) / (1000*60*60*24));;
+    let name;
+    let maxPrice = 0;
+    for (const token in tokens) {
+        const tok = new Coin(token).getAvgValue(days);
+        if(tok > maxPrice) {
+            maxPrice = tok;
+            name = token;
+        }
+    }
+
+    return name;
+}
 
 
 module.exports.tokenChoice = tokenChoice;
