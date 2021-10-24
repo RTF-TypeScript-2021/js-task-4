@@ -32,38 +32,43 @@ Hamburger.STUFFING_POTATO = 'STUFFING_POTATO' //price 15 kal 10
 Hamburger.TOPPING_MAYO = 'TOPPING_MAYO'; //price 20 kal 5
 Hamburger.TOPPING_SPICE = 'TOPPING_SPICE'; //price 15
 
-const price = {
-    SIZE_SMALL: 50,
-    SIZE_LARGE:  100,
-    STUFFING_CHEESE:  10,
-    STUFFING_SALAD:  20,
-    STUFFING_POTATO:  15,
-    TOPPING_MAYO: 20,
-    TOPPING_SPICE:  15
+const sizes = {
+    "SIZE_SMALL" : {
+        kal: 20, price: 50
+    },
+    "SIZE_LARGE" : {
+        kal: 40, price: 100
+    }
 }
 
-const kal = {
-    SIZE_SMALL: 20,
-    SIZE_LARGE:  40,
-    STUFFING_CHEESE:  20,
-    STUFFING_SALAD:  5,
-    STUFFING_POTATO:  10,
-    TOPPING_MAYO: 5,
-    TOPPING_SPICE:  0
+const stuffings = {
+    "STUFFING_CHEESE" : {
+        price: 10, kal: 20
+    },
+    "STUFFING_SALAD" : {
+        price: 20, kal: 5
+    },
+    "STUFFING_POTATO" : {
+        price: 15, kal: 10
+    }
+}
+
+const toppings = {
+    "TOPPING_MAYO" : {
+        price: 20, kal: 5
+    },
+    "TOPPING_SPICE" : {
+        price: 15, kal: 0
+    }
 }
 
 function Hamburger(size, stuffing) {
-    if (!Hamburger.hasOwnProperty(size)) {
-        throw new Error("Incorrect size");
-    }
-    if (!Hamburger.hasOwnProperty(stuffing)) {
-        throw new Error("Incorrect stuffing");
+    if (!(size in sizes) || !(stuffing in stuffings)) {
+        throw new Error("Wrong parametrs");
     }
     this.size = size;
     this.stuffing = stuffing;
-    this.topping = [];
-    this.price = price[size] + price[stuffing];
-    this.kal = kal[size] + kal[size];
+    this.topping = []
 }
  
 /*Добавить добавку к гамбургеру. Можно добавить несколько
@@ -71,15 +76,13 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
-    if (!Hamburger.hasOwnProperty(topping)) {
-        throw new Error("Incorrect topping");
+    if (!(topping in toppings)) {
+        throw new Error("Wrond argument");
     }
-    if (this.topping.indexOf(topping) !== -1) {
-        throw new Error("This supplement is already available");
-    }
-    this.topping.push(topping);
-    this.price += price[topping];
-    this.kal += kal[topping];
+    if (this.topping.includes(topping)) {
+        throw new Error("There is already such an additive");
+    } 
+    this.topping.push(topping)
 }
  
 /* Убрать добавку, при условии, что она ранее была
@@ -87,15 +90,13 @@ Hamburger.prototype.addTopping = function (topping) {
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
  Hamburger.prototype.removeTopping = function (topping) {
-    if (!Hamburger.hasOwnProperty(topping)) {
-        throw new Error("Incorrect topping");
+    if (!(topping in toppings)) {
+        throw new Error("Wrong argument");
     }
-    if (this.topping.indexOf(topping) === -1) {
-        throw new Error("There is no such additive")
+    if(!(this.topping.includes(topping))){
+        throw new Error("There is no such supplement");
     }
-    this.topping.splice(topping.indexOf(topping), 1);
-    this.price -= price[topping];
-    this.kal -= kal[topping];
+    this.topping = this.topping.filter(x => x !== topping);
  }
  
 /* Получить список добавок.
@@ -118,14 +119,22 @@ Hamburger.prototype.getStuffing = function () {
 /* Узнать цену гамбургера
  * @return {Number} Цена в тугриках */
 Hamburger.prototype.calculatePrice = function () {
-    return this.price;
+    let result = sizes[this.size].price + stuffings[this.stuffing].price;
+    for (const topping of this.topping) {
+        result += toppings[topping].price;
+    }
+    return result;
 }
  
  
 /* Узнать калорийность
  * @return {Number} Калорийность в калориях */
 Hamburger.prototype.calculateCalories = function () {
-    return this.kal;
+    let result = sizes[this.size].kal + stuffings[this.stuffing].kal;
+    for (const topping of this.topping) {
+        result += toppings[topping].kal;
+    }
+    return result;
 }
 
 module.exports.Hamburger = Hamburger;
