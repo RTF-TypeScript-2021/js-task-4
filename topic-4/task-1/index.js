@@ -57,7 +57,7 @@ function Coin(token) {
 function tokenChoice(months) { 
     let currentDate = new Date();
     let nextDate = new Date(months[0]["year"], months[0]["month"]);
-    let daysCount = (nextDate.getTime() - currentDate.getTime()) / 64800000;
+    const daysCount = (nextDate.getTime() - currentDate.getTime()) / 64800000;
     let bestCost = 0;
     let profitableToken;
     for (const token in tokens) {
