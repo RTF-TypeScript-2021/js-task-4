@@ -25,48 +25,61 @@
 
 /* Размеры, виды начинок и добавок */
 Hamburger.SIZE_SMALL = {
-    type: 'SIZE_SMALL',
+    type: 'size',
+    name: 'SIZE_SMALL',
     kal : 20,
     price : 50,
 }; //kal 20 price 50
 Hamburger.SIZE_LARGE = {
-    type : 'SIZE_LARGE',
+    type: 'size',
+    name : 'SIZE_LARGE',
     kal : 40,
     price : 100,
 }; //kal 40 price 100
 Hamburger.STUFFING_CHEESE = {
-    type : 'STUFFING_CHEESE',
+    type: 'stuffing',
+    name : 'STUFFING_CHEESE',
     kal : 20,
     price : 10,
 }; //price 10 kal 20
 Hamburger.STUFFING_SALAD = {
-    type : 'STUFFING_SALAD',
+    type: 'stuffing',
+    name : 'STUFFING_SALAD',
     kal : 5,
     price : 20,
 }; //price 20 kal 5
 Hamburger.STUFFING_POTATO = {
-    type : 'STUFFING_POTATO',
+    type: 'stuffing',
+    name : 'STUFFING_POTATO',
     kal : 10,
     price : 15,
 }; //price 15 kal 10
 Hamburger.TOPPING_MAYO = {
-    type : 'TOPPING_MAYO',
+    type: 'topping',
+    name : 'TOPPING_MAYO',
     kal : 5,
     price : 20,
 } ; //price 20 kal 5
 Hamburger.TOPPING_SPICE = {
-    type : 'TOPPING_SPICE',
+    type: 'topping',
+    name : 'TOPPING_SPICE',
     kal : 0,
     price : 15,
 };
 //price 15
 
 function Hamburger(size, stuffing) {
-    if(Hamburger[size.type] === undefined){
-        throw Error("size is not property of Hamburger, must be like Hamburger.SIZE_LARGE ...");
+    if(Hamburger[size.name] === undefined){
+        throw new Error("size is not property of Hamburger, must be like Hamburger.SIZE_LARGE ...");
     }
-    if(Hamburger[stuffing.type] === undefined){
-        throw Error("stuffing is not property of Hamburger, must be like Hamburger.STUFFING_POTATO ...");
+    if(Hamburger[stuffing.name] === undefined){
+        throw new Error("stuffing is not property of Hamburger, must be like Hamburger.STUFFING_POTATO ...");
+    }
+    if(size.type !== 'size'){
+        throw new Error(`Invalid argument size. Expected: Hamburger.SIZE_... Actual: Hamburger.${size.name}`);
+    }
+    if(stuffing.type !== 'stuffing'){
+        throw new Error(`Invalid argument size. Expected: Hamburger.STUFFING_... Actual: Hamburger.${stuffing.name}`);
     }
     this.size = size;
     this.stuffing = stuffing; //TODO: одна начинка должна быть обязательно
@@ -77,11 +90,14 @@ function Hamburger(size, stuffing) {
 * @param topping     Тип добавки
 * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.addTopping = function (topping) {
-    if(Hamburger[topping.type] === undefined){
-        throw Error("topping is not property of Hamburger, must be like Hamburger.TOPPING_SPICE");
+    if(Hamburger[topping.name] === undefined){
+        throw new Error("topping is not property of Hamburger, must be like Hamburger.TOPPING_SPICE");
+    }
+    if(topping.type !== 'topping'){
+        throw new Error(`Invalid argument topping. Expected: Hamburger.TOPPING_... Actual: Hamburger.${topping.name}`);
     }
     if(this.toppings.includes(topping)){
-        throw Error(`topping ${topping.type} has already been added`);
+        throw new Error(`topping ${topping.name} has already been added`);
     }
     this.toppings.push(topping);
 }
@@ -91,6 +107,9 @@ Hamburger.prototype.addTopping = function (topping) {
  * @param topping   Тип добавки
  * @throws {HamburgerException}  При неправильном использовании*/
 Hamburger.prototype.removeTopping = function (topping) {
+    if(topping.type !== 'topping'){
+        throw new Error(`Invalid argument topping. Expected: Hamburger.TOPPING_... Actual: Hamburger.${topping.name}`);
+    }
     const toppingIdx = this.toppings.indexOf(topping);
     if (topping === -1){
         throw new Error("can't remove, topping is empty");

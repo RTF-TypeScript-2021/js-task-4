@@ -45,12 +45,15 @@ const checkVasya = 5000;
  * 
  * @param {*} token токен
  */
+
+
 function Coin(token) {
     this.name = token
     this.price = Number.parseFloat(tokens[token].price);
     this.priceChange24h = Number.parseFloat(tokens[token].priceChange24h)/100;
     this.amount = Math.floor(checkVasya / this.price);
 }
+
 
 Coin.prototype.getProfitMid = function(days) {
     const min = this.price*Math.pow(1 - this.priceChange24h, days);
